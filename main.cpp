@@ -12,9 +12,12 @@ using namespace std;
 
 int main() {
 
-    vector<string> list = readList();
-    for (int i = 0; i<list.size(); ++i){
-    	cout << list[i] << "	" << i << endl;
-    }
+    // vector<string> list = readList();
+    // for (int i = 0; i<list.size(); ++i){
+    // 	cout << list[i] << "	" << i << endl;
+    // }
+
+    vector<string> cross = readCross();
+
     return 0;
 }
