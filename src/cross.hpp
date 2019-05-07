@@ -31,13 +31,15 @@ public:
 
 class Word{
 public:
-    Word(int, int, int, int, bool);
+    Word(int, int, int, int, bool, int);
+    Word();
     int len;
     int x_start;
     int y_start;
     int x_end;
     int y_end;
     bool vertical;
+    int number;
 };
 
 class Crossing{
@@ -50,7 +52,12 @@ public:
 	// Optional<int> nb2;
 };
 
-
+class WordPair{
+public:
+    WordPair(string, Word);
+    string candidate;
+    Word word;
+};
 
 
 vector<string> readList();
@@ -59,6 +66,8 @@ vector<Word> createVerticalWords(vector<string>);
 vector<Word> createHorizontalWords(vector<string>);
 vector<string> extendSize(vector<string>);
 vector<Crossing> createCrossings(vector<string>);
+vector<WordPair> createPairs(vector<Word>, vector<string>);
+vector<Word> concatenateWords(vector<Word>, vector<Word>);
 
 
 #endif 

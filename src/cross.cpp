@@ -10,12 +10,23 @@
 #include <iostream>
 #include <fstream>
 #include <cstdio>
+#include <vector>
 
 
 using namespace std;
 
+Word::Word(){
+	len = 0;
+	x_start = 0;
+	x_end = 0;
+	y_start = 0;
+	y_end = 0;
+	vertical = false;
+	number = 0;
+}
 
-Word::Word(int x_s, int y_s, int x_e, int y_e, bool v){
+
+Word::Word(int x_s, int y_s, int x_e, int y_e, bool v, int nb){
 	len = x_s - x_e + y_s - y_e - 1;
 	if(len<0)
 		len *= -1;
@@ -24,6 +35,7 @@ Word::Word(int x_s, int y_s, int x_e, int y_e, bool v){
 	x_end = x_e;
 	y_end = y_e;
 	vertical = v;
+	number = nb;
 }
 
 Crossing::Crossing(int x_p, int y_p){
@@ -36,6 +48,11 @@ Crossing::Crossing(int x_p, int y_p){
 
 Crossing::Crossing(int x, int y, int w1, int w2){
 
+}
+
+WordPair::WordPair(string c, Word w){
+	candidate = c;
+	word = w;
 }
 
 vector<string> readList(){
@@ -78,6 +95,7 @@ vector<Word> createHorizontalWords(vector<string> cross){
 	vector<Word> result;
 	int start;
 	bool buffor;
+	int nb = 0;
 	int x_size = cross[0].length();
 	int y_size = cross.size();
 	for(int y = 0; y<y_size; ++y){
@@ -88,16 +106,18 @@ vector<Word> createHorizontalWords(vector<string> cross){
 				start = x;
 			}
 			if(cross[y][x] == '0' && buffor == true){
-				Word temp = Word(start, y, x-1, y, false);
+				Word temp = Word(start, y, x-1, y, false, nb);
 				if (temp.len > 1){
 					result.push_back(temp);
+					++nb;
 				}
 				buffor = false;
 			}
 			if(cross[y][x] == '1' && x == x_size-1){
-				Word temp = Word(start, y, x, y, false);
+				Word temp = Word(start, y, x, y, false, nb);
 				if (temp.len > 1){
 					result.push_back(temp);
+					++nb;
 				}
 			}
 
@@ -110,6 +130,7 @@ vector<Word> createVerticalWords(vector<string> cross){
 	vector<Word> result;
 	int start;
 	bool buffor;
+	int nb = 0;
 	int x_size = cross[0].length();
 	int y_size = cross.size();
 
@@ -121,16 +142,18 @@ vector<Word> createVerticalWords(vector<string> cross){
 				start = y;
 			}
 			if(cross[y][x] == '0' && buffor == true){
-				Word temp = Word(x, start, x, y-1, true);
+				Word temp = Word(x, start, x, y-1, true, nb);
 				if (temp.len > 1){
 					result.push_back(temp);
+					++nb;
 				}
 				buffor = false;
 			}
 			if(cross[y][x] == '1' && y == y_size-1){
-				Word temp = Word(x, start, x, y, true);
+				Word temp = Word(x, start, x, y, true, nb);
 				if (temp.len > 1){
 					result.push_back(temp);
+					++nb;
 				}
 			}
 
@@ -156,7 +179,7 @@ vector<string> extendSize(vector<string> cross){
 	return result;
 }
 
-  vector<Crossing> CreateCrossings(vector<string> cross){
+  vector<Crossing> createCrossings(vector<string> cross){
     	vector<Crossing> result;
     	int x_size = cross[0].length();
 		int y_size = cross.size();
@@ -174,6 +197,29 @@ vector<string> extendSize(vector<string> cross){
     	}
     	return result;
     }
+
+vector<WordPair> createPairs(vector<Word> words, vector<string> list){
+	vector<WordPair> result;
+	for (int i=0; i<words.size(); ++i){
+		for (int ii=0; ii<list.size(); ++ii){
+			if (words[i].len == list[ii].length()){
+				result.push_back(WordPair(list[ii], words[i]));
+			}
+		}
+	}
+	return result;
+}
+
+vector<Word> concatenateWords(vector<Word> w1, vector<Word> w2){
+	vector<Word> result = w1;
+	for (int i = 0; i<w2.size(); ++i){
+		result.push_back(w2[i]);
+		result.back().number += w1.size();
+	}
+	return result;
+}
+
+
 
 
 

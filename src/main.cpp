@@ -8,38 +8,27 @@
 
 #include <iostream>
 #include "cross.hpp"
+
 using namespace std;
 
 int main() {
 
-    // vector<string> list = readList();
+    vector<string> list = readList();
    
     	vector<string> cross = extendSize(readCross());
-
-    for(int i = 0; i < cross.size(); ++i){
-    	cout << cross[i] << endl;
-    }
-
-
-
-     vector<Word> ver = createVerticalWords(cross);
-
-     cout << "ver size: " << ver.size() << endl;
-    for (int i = 0; i<ver.size(); ++i){
-    	cout << "len: " << ver[i].len << " x: " << ver[i].x_start << endl;
-    }
-
+     	vector<Word> ver = createVerticalWords(cross);
        	vector<Word> hor = createHorizontalWords(cross);
 
-     cout << "hor size: " << hor.size() << endl;
-    for (int i = 0; i<hor.size(); ++i){
-    	cout << "len: " << hor[i].len << " y: " << hor[i].y_start << endl;
-    }
-
+       	vector<Word> words = concatenateWords(ver, hor);
 
     	vector<Crossing> crs = createCrossings(cross);
-    // for (int i = 0; i<cr.size(); ++i){
-    // 	cout << "x: " << cr[i].x << " y: " << cr[i].y << endl;
-    // }
+
+    	vector<WordPair> pairs = createPairs(words, list);
+
+    	for(int i=0; i<pairs.size(); ++i){
+    		cout << "{" << pairs[i].candidate << ", " << pairs[i].word.number << "}" << endl;
+    	}
+    
     return 0;
 }
+
