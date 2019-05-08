@@ -219,6 +219,53 @@ vector<Word> concatenateWords(vector<Word> w1, vector<Word> w2){
 	return result;
 }
 
+int findAnyOfThatNumber(vector<WordPair> pairs, int number){
+	for(int i=0; i<pairs.size(); ++i){
+		if(pairs[i].word.number == number){
+			return i;
+		}
+	}
+	return -1;
+}
+
+bool checkOnce(vector<WordPair> choosed, vector<WordPair> pair, vector<Crossing> crosses, int level){
+	choosed.push_back(pair[findAnyOfThatNumber(pair, level)])
+	pair.erase(pair.begin() + findAnyOfThatNumber(pair, level));
+
+}
+
+bool checkPossibility(vector<WordPair> pair, vector<Crossing> cr){
+	for(int i = 0; i<cr.size(); ++i){
+		if(!checkPossibility(pair, cr[i]))
+			return false
+	}
+	return true;
+}
+
+
+
+bool checkPossibilityForCrossing(vector<WordPair> pair, Crossing cr){
+	char c1, c2;
+		for(int i = 0; i<pair.size(); ++i){
+			if(pair[i].word.vertical == true){
+				if(pair[i].word.x_start == cr.x){
+					c1 = pair[i].candidate[cr.y - pair[i].word.y_start]
+				}
+			}
+			else{
+				if(pair[i].word.vertical == false){
+				if(pair[i].word.y_start == cr.y){
+					c2 = pair[i].candidate[cr.x - pair[i].word.x_start]
+				}
+			}
+			}
+		}
+		return c1 == c2;
+}
+
+
+
+
 
 
 

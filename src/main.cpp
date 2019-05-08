@@ -28,6 +28,7 @@ int main() {
     	for(int i=0; i<pairs.size(); ++i){
     		cout << "{" << pairs[i].candidate << ", " << pairs[i].word.number << "}" << endl;
     	}
+    	vector<WordPair> empty;
     
     return 0;
 }

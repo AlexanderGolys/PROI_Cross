@@ -68,6 +68,9 @@ vector<string> extendSize(vector<string>);
 vector<Crossing> createCrossings(vector<string>);
 vector<WordPair> createPairs(vector<Word>, vector<string>);
 vector<Word> concatenateWords(vector<Word>, vector<Word>);
-
+bool checkOnce(vector<WordPair>, vector<WordPair>, vector<Crossing>, int);
+int findAnyOfThatNumber(vector<WordPair>, int);
+bool checkPossibilityForCrossing(vector<WordPair>, Crossing);
+bool checkPossibility(vector<WordPair>, vector<Crossing>);
 
 #endif 
