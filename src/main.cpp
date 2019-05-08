@@ -13,23 +13,16 @@ using namespace std;
 
 int main() {
 
-    vector<string> list = readList();
-   
+        vector<string> list = readList();
     	vector<string> cross = extendSize(readCross());
      	vector<Word> ver = createVerticalWords(cross);
        	vector<Word> hor = createHorizontalWords(cross);
-
        	vector<Word> words = concatenateWords(ver, hor);
-
     	vector<Crossing> crs = createCrossings(cross);
-
     	vector<WordPair> pairs = createPairs(words, list);
-
-    	for(int i=0; i<pairs.size(); ++i){
-    		cout << "{" << pairs[i].candidate << ", " << pairs[i].word.number << "}" << endl;
-    	}
-    	vector<WordPair> empty;
-    
-    return 0;
+        crs = giveAllCrossingNumbers(crs, ver, hor);
+        vector<WordPair> result = productAll(crs, pairs);
+        print(result, cross, answer(result, words.size()));
+        return 0;
 }
 

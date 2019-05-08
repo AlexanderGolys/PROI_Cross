@@ -45,11 +45,12 @@ public:
 class Crossing{
 public:
 	Crossing(int, int);
-    Crossing(int, int, int, int);
 	int x;
 	int y;
-	// Optional<int> nb1;
-	// Optional<int> nb2;
+	Optional<int> pos_x;
+	Optional<int> pos_y;
+    Optional<int> nb_v;
+    Optional<int> nb_h;
 };
 
 class WordPair{
@@ -57,6 +58,8 @@ public:
     WordPair(string, Word);
     string candidate;
     Word word;
+    bool operator==(const WordPair&, const WordPair&);
+
 };
 
 
@@ -72,5 +75,14 @@ bool checkOnce(vector<WordPair>, vector<WordPair>, vector<Crossing>, int);
 int findAnyOfThatNumber(vector<WordPair>, int);
 bool checkPossibilityForCrossing(vector<WordPair>, Crossing);
 bool checkPossibility(vector<WordPair>, vector<Crossing>);
+Crossing giveCrossingNumbers(Crossing, vector<Word>, vector<Word>);
+vector<Crossing> giveAllCrossingNumbers(vector<Crossing>, vector<Word>, vector<Word>);
+vector<WordPair> giveCrossingPossibilities(Crossing, vector<WordPair>);
+vector<WordPair> productPossibilities(vector<WordPair>, vector<WordPair>);
+vector<WordPair> productAll(vector<Crossing>, vector<WordPair>);
+bool answer(vector<WordPair>, int);
+
+void print(vector<WordPair>, vector<string>, bool);
+vector<string> print(WordPair, vector<string>);
 
 #endif 

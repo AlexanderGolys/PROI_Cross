@@ -1,5 +1,5 @@
 all: main.o cross.o 
-	g++ main.o cross.o -o prog
+	g++ main.o cross.o -o prog && ./prog
 
 main.o: main.cpp
 	g++ -c main.cpp
