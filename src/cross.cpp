@@ -54,8 +54,8 @@ WordPair::WordPair(string c, Word w){
 	word = w;
 }
 
-bool WordPair::operator==(const WordPair& w1, const WordPair& w2){
-    return (w1.candidate == w2.candidate && w1.number == w2.number);
+bool WordPair::operator==(const WordPair& w1){
+    return (candidate == w1.candidate && word.number == w1.word.number);
 }
 
 
@@ -199,7 +199,9 @@ vector<string> extendSize(vector<string> cross){
     			}
     		}
     	}
+
     	return result;
+
     }
 
 vector<WordPair> createPairs(vector<Word> words, vector<string> list){
@@ -261,102 +263,140 @@ bool checkPossibilityForCrossing(vector<WordPair> pair, Crossing cr){
 		return c1 == c2;
 }
 
-Crossing giveCrossingNumbers(Crossing cr, vector<Word> ver, vector<Word> hor){
-    Crossing result;
-    for(int i=0; i<ver.size(); ++i){
-        if(cr.x == ver[i].x_start && cr.y >= ver[i].y_start && cr.y <= ver[i].y_end){
+Crossing giveCrossingNumbers(Crossing cr, vector<Word> w){
+    Crossing result = Crossing(cr.x, cr.y);
+    for(int i=0; i<w.size(); ++i) {
+        if (w[i].vertical) {
+        if (cr.x == w[i].x_start && cr.y >= w[i].y_start && cr.y <= w[i].y_end) {
             result.pos_y.defined = true;
-            result.pos_y.value = cr.y - ver[i].y_start;
+            result.pos_y.value = cr.y - w[i].y_start;
             result.nb_v.defined = true;
-            result.nb_v.value = ver[i].number;
-        }
-    }
-    for(int i=0; i<hor.size(); ++i) {
-        if (cr.y == hor[i].y_start && cr.x >= hor[i].x_start && cr.x <= hor[i].x_end) {
+            result.nb_v.value = w[i].number;
+        }}else{
+
+        if (cr.y == w[i].y_start && cr.x >= w[i].x_start && cr.x <= w[i].x_end) {
             result.pos_x.defined = true;
-            result.pos_x.value = cr.x - ver.x_start;
+            result.pos_x.value = cr.x - w[i].x_start;
             result.nb_h.defined = true;
-            result.nb_h.value = hor[i].number;
+            result.nb_h.value = w[i].number;
         }
     }
+    }
+
+    return result;
 }
 
-vector<Crossing> giveAllCrossingNumbers(vector<Crossing>cr, vector<Word>ver, vector<Word>hor){
+vector<Crossing> giveAllCrossingNumbers(vector<Crossing>cr, vector<Word> w){
     vector<Crossing> result;
     for(int i=0; i<cr.size(); ++i){
-        result.push_back(giveCrossingNumbers(cr[i], ver, hor));
+        result.push_back(giveCrossingNumbers(cr[i], w));
     }
     return result;
 }
 
+
+
+
+
+
+
+
+
+
+
+
+
+
 vector<WordPair> giveCrossingPossibilities(Crossing cr, vector<WordPair> pairs){
+//    cout << "new" << endl;
     vector<WordPair> result;
     for (int i = 0; i < pairs.size() ; ++i) {
-        for (int j = 0; j < pairs.size() < ; ++j) {
-            if (i != j && pairs[i].word.number == cr.nb_v.value || pairs[j].word.number == cr.nb_h.value) {
+        for (int j = 0; j < pairs.size(); ++j) {
+            if (i != j && pairs[i].word.number == cr.nb_v.value && pairs[j].word.number == cr.nb_h.value) {
                 if (pairs[i].candidate[cr.pos_y.value] == pairs[j].candidate[cr.pos_x.value]) {
                     result.push_back(pairs[i]);
                     result.push_back(pairs[j]);
+//                    cout << pairs[i].word.number << " + " << pairs[j].word.number << " : " <<
+//                    pairs[i].candidate << " " << pairs[j]. candidate << endl;
                 }
             }
         }
     }
+
+    return result;
 }
+
+
+
 
 vector<WordPair> productPossibilities(vector<WordPair> p1, vector<WordPair> p2) {
     vector <WordPair> result;
-    int same_word = -1;
     for (int i = 0; i < p1.size(); ++i) {
+        bool is = false;
         for (int j = 0; j < p2.size(); ++j) {
-            if (p1[i] == p2[i]) {
-                same_word = p1.word.number;
+            if (p1[i].word.number == p2[j].word.number) {
+                is = true;
+//                cout << "is" << endl;
             }
+
         }
-    }
+        if (!is) {
+            result.push_back(p1[i]);
 
-
-    for (int i = 0; i < p1.size(); ++i) {
-        if (p1[i].word.number == same_word) {
+        } else {
             for (int j = 0; j < p2.size(); ++j) {
                 if (p1[i] == p2[j]) {
                     result.push_back(p1[i]);
                 }
             }
-        } else {
-            result.push_back(p1[i]);
         }
     }
 
-
-    for (int k = 0; k < p2.size(); ++k) {
-        if (p1[k].word.number != same_word) {
-            result.push_back(p1[k]);
+    for (int i = 0; i < p2.size(); ++i) {
+        bool is = false;
+        for (int j = 0; j < p1.size(); ++j) {
+            if (p2[i].word.number == p1[j].word.number){
+                is = true;
+                }
+        }
+        if (!is) {
+            result.push_back(p2[i]);
         }
     }
+    cout<<"{";
+    for (int j = 0; j < result.size() ; ++j) {
+        cout << result[j].candidate << endl;
+    }
+    cout << "}" << endl << endl;
     return result;
 }
 
 
 vector<WordPair> productAll(vector<Crossing> cr, vector<WordPair> pairs){
-    vector<WordPair> result = giveCrossingPossibilities(cr[0], pairs);;
+    vector<WordPair> result = giveCrossingPossibilities(cr[0], pairs);
     for (int i = 1; i < cr.size(); ++i) {
         vector<WordPair> pos = giveCrossingPossibilities(cr[i], pairs);
+        cout << "pos: " << endl;
+        for (int j = 0; j <pos.size() ; ++j) {
+            cout << pos[j].candidate << " nb: "<< pos[j].word.number << endl;
+        }
         result = productPossibilities(result, pos);
     }
+
     return result;
 }
 
 bool answer(vector<WordPair> pair, int nb_of_words){
     int c = 0;
-    for (int i = 0; i < nb_of_words; ++i) {
+    for (int i = 0; i < nb_of_words; ++i){
         bool is = false;
         for (int j = 0; j < pair.size(); ++j) {
             if (i == pair[j].word.number){
                 is = true;
             }
-            if (!is){
-                return false;
-            }
+        }
+        if (!is){
+            return false;
         }
     }
     return true;
@@ -365,28 +405,59 @@ bool answer(vector<WordPair> pair, int nb_of_words){
 vector<string> print(WordPair pair, vector<string> cross){
     if (pair.word.vertical) {
         for (int i = 0; i < pair.candidate.length(); ++i) {
-            cross[pair.word.y_start][pair.word.x_start + i] = pair.candidate[i];
+            cross[pair.word.y_start + i][pair.word.x_start] = pair.candidate[i];
         }
     }else{
         for (int i = 0; i < pair.candidate.length(); ++i) {
-            cross[pair.word.y_start + i][pair.word.x_start] = pair.candidate[i];
+            cross[pair.word.y_start][pair.word.x_start + i] = pair.candidate[i];
         }
     }
     return cross;
 }
 
 void print(vector<WordPair> pairs, vector<string> cross, bool answer){
+    cross = delete0(cross);
     if(answer){
-        cout << "To możliwe!" << endl;
-        for (int i = 0; i <; ++i) {
+        cout << "To możliwe!" << endl << endl;
+        for (int i = 0; i < cross.size(); ++i) {
             cross = print(pairs[i], cross);
         }
         for (int j = 0; j < cross.size(); ++j) {
-            cout << cross[i] << endl;
+            cout << cross[j] << endl;
         }
     }else{
         cout << "To niemożliwe!" << endl;
     }
+}
+
+vector<WordPair> delDuplicates(vector<WordPair> p){
+    vector<WordPair> result;
+    int max = 0;
+    for (int i = 0; i < p.size(); ++i) {
+        (max < p[i].word.number)?(max = p[i].word.number):1;
+    }
+    ++max;
+
+    bool *is = new bool[max];
+    for (int j = 0; j < p.size(); ++j) {
+        if(!is[p[j].word.number]){
+            result.push_back(p[j]);
+            is[p[j].word.number] = true;
+        }
+    }
+    delete [] is;
+    return result;
+}
+
+vector<string> delete0(vector<string> cr){
+    for (int i = 0; i < cr.size(); ++i) {
+        for (int j = 0; j < cr[0].length(); ++j) {
+            if(cr[i][j] == '0'){
+                cr[i][j] = ' ';
+            }
+        }
+    }
+    return cr;
 }
 
 

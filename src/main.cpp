@@ -20,9 +20,17 @@ int main() {
        	vector<Word> words = concatenateWords(ver, hor);
     	vector<Crossing> crs = createCrossings(cross);
     	vector<WordPair> pairs = createPairs(words, list);
-        crs = giveAllCrossingNumbers(crs, ver, hor);
+    	crs = giveAllCrossingNumbers(crs, words);
+
+
         vector<WordPair> result = productAll(crs, pairs);
-        print(result, cross, answer(result, words.size()));
-        return 0;
+        result = delDuplicates(result);
+
+    for (int i = 0; i < result.size() ; ++i) {
+        cout << "{" << result[i].word.number << ", " << result[i].candidate << "}" << endl;
+    }
+
+    print(result, cross, answer(result, words.size()));
+    return 0;
 }
 
