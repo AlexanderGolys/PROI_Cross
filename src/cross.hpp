@@ -27,6 +27,7 @@ public:
     value = 0;
     defined = false;
     }
+
 };
 
 class Word{
@@ -41,6 +42,15 @@ public:
     bool vertical;
     int number;
 };
+
+class Cross{
+public:
+    vector<string> cr;
+    Cross();
+    void delete0();
+};
+
+
 
 class Crossing{
 public:
@@ -59,16 +69,25 @@ public:
     string candidate;
     Word word;
     bool operator==(const WordPair&);
-
 };
 
+class CrossDone : public Cross{
+public:
+    vector<WordPair> pairs;
+    CrossDone(Cross, vector<WordPair>);
+    CrossDone(const CrossDone&);
+    void print(int);
+    void print(bool);
+};
 
 vector<string> readList();
 vector<string> readCross();
-vector<Word> createVerticalWords(vector<string>);
-vector<Word> createHorizontalWords(vector<string>);
+
+
+vector<Word> createVerticalWords(Cross);
+vector<Word> createHorizontalWords(Cross);
 vector<string> extendSize(vector<string>);
-vector<Crossing> createCrossings(vector<string>);
+vector<Crossing> createCrossings(Cross);
 vector<WordPair> createPairs(vector<Word>, vector<string>);
 vector<Word> concatenateWords(vector<Word>, vector<Word>);
 bool checkOnce(vector<WordPair>, vector<WordPair>, vector<Crossing>, int);

@@ -54,8 +54,62 @@ WordPair::WordPair(string c, Word w){
 	word = w;
 }
 
+CrossDone::CrossDone(Cross cross, vector <WordPair> pairs_list) {
+    cr = cross.cr;
+    pairs = pairs_list;
+}
+
+void CrossDone::print(int n) {
+     if (pairs[n].word.vertical) {
+            for (int i = 0; i < pairs[n].candidate.length(); ++i) {
+                cr[pairs[n].word.y_start + i][pairs[n].word.x_start] = pairs[n].candidate[i];
+            }
+        }else{
+            for (int i = 0; i < pairs[n].candidate.length(); ++i) {
+                cr[pairs[n].word.y_start][pairs[n].word.x_start + i] = pairs[n].candidate[i];
+            }
+        }
+}
+
+void CrossDone::print(bool ans) {
+        delete0();
+        if(ans){
+            cout << "To możliwe!" << endl << endl;
+                for (int i = 0; i < pairs.size(); ++i) {
+                    cout << i << endl;
+                    print(i);
+                }
+                for (int j = 0; j < cr.size(); ++j) {
+                    cout << cr[j] << endl;
+                }
+            }else{
+                cout << "To niemożliwe!" << endl;
+            }
+}
+
+
 bool WordPair::operator==(const WordPair& w1){
     return (candidate == w1.candidate && word.number == w1.word.number);
+}
+
+CrossDone::CrossDone(const CrossDone& cd) {
+    cr = cd.cr;
+    pairs = cd.pairs;
+}
+
+Cross::Cross() {
+    cr = extendSize(readCross());
+}
+
+
+void Cross::delete0() {
+    for (int i = 0; i < cr.size(); ++i) {
+        for (int j = 0; j < cr[0].length(); ++j) {
+            if(cr[i][j] == '0'){
+                    cr[i][j] = ' ';
+            }
+        }
+    }
 }
 
 
@@ -95,21 +149,21 @@ vector<string> readCross(){
 	return result;
 }
 
-vector<Word> createHorizontalWords(vector<string> cross){
+vector<Word> createHorizontalWords(Cross cross){
 	vector<Word> result;
 	int start;
 	bool buffor;
 	int nb = 0;
-	int x_size = cross[0].length();
-	int y_size = cross.size();
+	int x_size = cross.cr[0].length();
+	int y_size = cross.cr.size();
 	for(int y = 0; y<y_size; ++y){
 		buffor = false;
 		for(int x = 0; x<x_size; ++x){
-			if(cross[y][x] == '1' && !buffor){
+			if(cross.cr[y][x] == '1' && !buffor){
 				buffor = true;
 				start = x;
 			}
-			if(cross[y][x] == '0' && buffor){
+			if(cross.cr[y][x] == '0' && buffor){
 				Word temp = Word(start, y, x-1, y, false, nb);
 				if (temp.len > 1){
 					result.push_back(temp);
@@ -117,7 +171,7 @@ vector<Word> createHorizontalWords(vector<string> cross){
 				}
 				buffor = false;
 			}
-			if(cross[y][x] == '1' && x == x_size-1){
+			if(cross.cr[y][x] == '1' && x == x_size-1){
 				Word temp = Word(start, y, x, y, false, nb);
 				if (temp.len > 1){
 					result.push_back(temp);
@@ -130,22 +184,22 @@ vector<Word> createHorizontalWords(vector<string> cross){
 	return result;
 }
 
-vector<Word> createVerticalWords(vector<string> cross){
+vector<Word> createVerticalWords(Cross cross){
 	vector<Word> result;
 	int start;
 	bool buffor;
 	int nb = 0;
-	int x_size = cross[0].length();
-	int y_size = cross.size();
+	int x_size = cross.cr[0].length();
+	int y_size = cross.cr.size();
 
 	for(int x = 0; x<x_size; ++x){
 		buffor = false;
 		for(int y = 0; y<y_size; ++y){
-			if(cross[y][x] == '1' && !buffor){
+			if(cross.cr[y][x] == '1' && !buffor){
 				buffor = true;
 				start = y;
 			}
-			if(cross[y][x] == '0' && buffor){
+			if(cross.cr[y][x] == '0' && buffor){
 				Word temp = Word(x, start, x, y-1, true, nb);
 				if (temp.len > 1){
 					result.push_back(temp);
@@ -153,7 +207,7 @@ vector<Word> createVerticalWords(vector<string> cross){
 				}
 				buffor = false;
 			}
-			if(cross[y][x] == '1' && y == y_size-1){
+			if(cross.cr[y][x] == '1' && y == y_size-1){
 				Word temp = Word(x, start, x, y, true, nb);
 				if (temp.len > 1){
 					result.push_back(temp);
@@ -183,17 +237,17 @@ vector<string> extendSize(vector<string> cross){
 	return result;
 }
 
-  vector<Crossing> createCrossings(vector<string> cross){
+  vector<Crossing> createCrossings(Cross cross){
     	vector<Crossing> result;
-    	int x_size = cross[0].length();
-		int y_size = cross.size();
+    	int x_size = cross.cr[0].length();
+		int y_size = cross.cr.size();
     	for(int y=0; y<y_size; ++y){
     		for(int x=0; x<x_size; ++x){
-    			if(	cross[y][x] == '1' && (
-    				(y+1 < y_size && x+1 < x_size && cross[y+1][x] == '1' && cross[y][x+1] == '1') ||
-    				(y+1 < y_size && x-1 >= 0 && cross[y+1][x] == '1' && cross[y][x-1] == '1') ||
-    				(y-1 >= 0 && x+1 < x_size && cross[y-1][x] == '1' && cross[y][x+1] == '1') ||
-    				(y-1 >= 0 && x-1 >= 0 && cross[y-1][x] == '1' && cross[y][x-1] == '1'))
+    			if(	cross.cr[y][x] == '1' && (
+    				(y+1 < y_size && x+1 < x_size && cross.cr[y+1][x] == '1' && cross.cr[y][x+1] == '1') ||
+    				(y+1 < y_size && x-1 >= 0 && cross.cr[y+1][x] == '1' && cross.cr[y][x-1] == '1') ||
+    				(y-1 >= 0 && x+1 < x_size && cross.cr[y-1][x] == '1' && cross.cr[y][x+1] == '1') ||
+    				(y-1 >= 0 && x-1 >= 0 && cross.cr[y-1][x] == '1' && cross.cr[y][x-1] == '1'))
     				){
     				result.push_back(Crossing(x, y));
     			}
@@ -297,16 +351,6 @@ vector<Crossing> giveAllCrossingNumbers(vector<Crossing>cr, vector<Word> w){
 
 
 
-
-
-
-
-
-
-
-
-
-
 vector<WordPair> giveCrossingPossibilities(Crossing cr, vector<WordPair> pairs){
 //    cout << "new" << endl;
     vector<WordPair> result;
@@ -402,33 +446,8 @@ bool answer(vector<WordPair> pair, int nb_of_words){
     return true;
 }
 
-vector<string> print(WordPair pair, vector<string> cross){
-    if (pair.word.vertical) {
-        for (int i = 0; i < pair.candidate.length(); ++i) {
-            cross[pair.word.y_start + i][pair.word.x_start] = pair.candidate[i];
-        }
-    }else{
-        for (int i = 0; i < pair.candidate.length(); ++i) {
-            cross[pair.word.y_start][pair.word.x_start + i] = pair.candidate[i];
-        }
-    }
-    return cross;
-}
 
-void print(vector<WordPair> pairs, vector<string> cross, bool answer){
-    cross = delete0(cross);
-    if(answer){
-        cout << "To możliwe!" << endl << endl;
-        for (int i = 0; i < cross.size(); ++i) {
-            cross = print(pairs[i], cross);
-        }
-        for (int j = 0; j < cross.size(); ++j) {
-            cout << cross[j] << endl;
-        }
-    }else{
-        cout << "To niemożliwe!" << endl;
-    }
-}
+
 
 vector<WordPair> delDuplicates(vector<WordPair> p){
     vector<WordPair> result;
@@ -449,16 +468,7 @@ vector<WordPair> delDuplicates(vector<WordPair> p){
     return result;
 }
 
-vector<string> delete0(vector<string> cr){
-    for (int i = 0; i < cr.size(); ++i) {
-        for (int j = 0; j < cr[0].length(); ++j) {
-            if(cr[i][j] == '0'){
-                cr[i][j] = ' ';
-            }
-        }
-    }
-    return cr;
-}
+
 
 
 

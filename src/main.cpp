@@ -14,7 +14,7 @@ using namespace std;
 int main() {
 
         vector<string> list = readList();
-    	vector<string> cross = extendSize(readCross());
+    	Cross cross;
      	vector<Word> ver = createVerticalWords(cross);
        	vector<Word> hor = createHorizontalWords(cross);
        	vector<Word> words = concatenateWords(ver, hor);
@@ -29,8 +29,8 @@ int main() {
     for (int i = 0; i < result.size() ; ++i) {
         cout << "{" << result[i].word.number << ", " << result[i].candidate << "}" << endl;
     }
-
-    print(result, cross, answer(result, words.size()));
+    CrossDone done = CrossDone(cross, result);
+    done.print(answer(result, words.size()));
     return 0;
 }
 
