@@ -106,4 +106,8 @@ vector<string> print(WordPair, vector<string>);
 vector<WordPair> delDuplicates(vector<WordPair>);
 vector<string> delete0(vector<string>);
 
+void error(int);
+void printInstruction();
+void printErrInstruction(int);
+
 #endif 

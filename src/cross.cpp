@@ -74,9 +74,8 @@ void CrossDone::print(int n) {
 void CrossDone::print(bool ans) {
         delete0();
         if(ans){
-            cout << "To możliwe!" << endl << endl;
+            cout << endl << "To możliwe!" << endl << endl;
                 for (int i = 0; i < pairs.size(); ++i) {
-                    cout << i << endl;
                     print(i);
                 }
                 for (int j = 0; j < cr.size(); ++j) {
@@ -120,6 +119,17 @@ vector<string> readList(){
 	while (getline(file, line)) {
 		result.push_back(line);
 	}
+    for (int i = 0; i < result.size(); ++i) {
+        if(result[i][result[i].length() - 1] == ' '){
+            result[i].pop_back();
+        }
+        for (int j = 0; j < result[i].length(); ++j) {
+            if (result[i][j] == ' '){
+                error(1);
+            }
+        }
+    }
+
 	return result;
 }
 
@@ -142,8 +152,10 @@ vector<string> readCross(){
 				result[i] += '0';
 			if (c == '*')
 				result[i] += '1';
+			if(c != ' ' && c != '*' && c != '\n'){
+			    error(0);
+			}
 		}
-//		 cout << result[i] << endl;
 		++i;
 	}
 	return result;
@@ -233,7 +245,6 @@ vector<string> extendSize(vector<string> cross){
 		}
 		result.push_back(cross[i]);
 	}
-//	cout << "max size: " << max_size << endl;
 	return result;
 }
 
@@ -352,7 +363,6 @@ vector<Crossing> giveAllCrossingNumbers(vector<Crossing>cr, vector<Word> w){
 
 
 vector<WordPair> giveCrossingPossibilities(Crossing cr, vector<WordPair> pairs){
-//    cout << "new" << endl;
     vector<WordPair> result;
     for (int i = 0; i < pairs.size() ; ++i) {
         for (int j = 0; j < pairs.size(); ++j) {
@@ -360,8 +370,6 @@ vector<WordPair> giveCrossingPossibilities(Crossing cr, vector<WordPair> pairs){
                 if (pairs[i].candidate[cr.pos_y.value] == pairs[j].candidate[cr.pos_x.value]) {
                     result.push_back(pairs[i]);
                     result.push_back(pairs[j]);
-//                    cout << pairs[i].word.number << " + " << pairs[j].word.number << " : " <<
-//                    pairs[i].candidate << " " << pairs[j]. candidate << endl;
                 }
             }
         }
@@ -380,7 +388,6 @@ vector<WordPair> productPossibilities(vector<WordPair> p1, vector<WordPair> p2) 
         for (int j = 0; j < p2.size(); ++j) {
             if (p1[i].word.number == p2[j].word.number) {
                 is = true;
-//                cout << "is" << endl;
             }
 
         }
@@ -407,11 +414,11 @@ vector<WordPair> productPossibilities(vector<WordPair> p1, vector<WordPair> p2) 
             result.push_back(p2[i]);
         }
     }
-    cout<<"{";
-    for (int j = 0; j < result.size() ; ++j) {
-        cout << result[j].candidate << endl;
-    }
-    cout << "}" << endl << endl;
+//    cout<<"{";
+//    for (int j = 0; j < result.size() ; ++j) {
+//        cout << result[j].candidate << endl;
+//    }
+//    cout << "}" << endl << endl;
     return result;
 }
 
@@ -420,9 +427,9 @@ vector<WordPair> productAll(vector<Crossing> cr, vector<WordPair> pairs){
     vector<WordPair> result = giveCrossingPossibilities(cr[0], pairs);
     for (int i = 1; i < cr.size(); ++i) {
         vector<WordPair> pos = giveCrossingPossibilities(cr[i], pairs);
-        cout << "pos: " << endl;
+//        cout << "pos: " << endl;
         for (int j = 0; j <pos.size() ; ++j) {
-            cout << pos[j].candidate << " nb: "<< pos[j].word.number << endl;
+//            cout << pos[j].candidate << " nb: "<< pos[j].word.number << endl;
         }
         result = productPossibilities(result, pos);
     }
@@ -468,6 +475,25 @@ vector<WordPair> delDuplicates(vector<WordPair> p){
     return result;
 }
 
+void error(int e){
+    switch(e){
+        case 0:
+            cerr << "Wrong form of cross template:" << endl;
+            cerr << "The only acceptable characters in template file are '*' and ' '. The file must be ended with new line" << endl;
+            exit(0);
+        case 1:
+            cerr << "Wrong form of words list:" << endl;
+            cerr << "Each line of list should include only one word" << endl;
+            exit(1);
+
+    }
+}
+
+void printInstruction(){
+    cout << "Please fill cross.txt file with cross template, putting '*' or ' '." << endl <<
+    "Then, fill list.txt " <<
+    "with list of words. Every word should be in separate line and after all words there must be a new line."<< endl;
+}
 
 
 

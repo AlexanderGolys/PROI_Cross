@@ -13,6 +13,8 @@ using namespace std;
 
 int main() {
 
+        printInstruction();
+
         vector<string> list = readList();
     	Cross cross;
      	vector<Word> ver = createVerticalWords(cross);
@@ -26,9 +28,9 @@ int main() {
         vector<WordPair> result = productAll(crs, pairs);
         result = delDuplicates(result);
 
-    for (int i = 0; i < result.size() ; ++i) {
-        cout << "{" << result[i].word.number << ", " << result[i].candidate << "}" << endl;
-    }
+//    for (int i = 0; i < result.size() ; ++i) {
+//        cout << "{" << result[i].word.number << ", " << result[i].candidate << "}" << endl;
+//    }
     CrossDone done = CrossDone(cross, result);
     done.print(answer(result, words.size()));
     return 0;
